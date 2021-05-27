@@ -2,12 +2,10 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import ElementUI from 'element-ui'
 
 import './plugins/element.js'
-import 'element-ui/lib/theme-chalk/index.css'
-
-Vue.use(ElementUI)
+// 全局样式
+import "@/assets/style/css/global.css"
 Vue.config.productionTip = false
 
 new Vue({
