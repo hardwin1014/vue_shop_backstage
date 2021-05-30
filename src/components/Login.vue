@@ -4,23 +4,36 @@
     <div class="login_box">
       <!-- 头像 -->
       <div class="avatar_box">
-        <img src="../assets/logo.png" alt="">
+        <img src="../assets/logo.png" alt="" />
       </div>
       <!-- 登录表单 -->
-      <el-form :model="loginForm" ref="LoginFormRef" :rules="loginFormRules" label-width="0px" class="login_form">
+      <el-form
+        :model="loginForm"
+        ref="LoginFormRef"
+        :rules="loginFormRules"
+        label-width="0px"
+        class="login_form"
+      >
         <!-- 用户名 -->
         <el-form-item prop="username">
-          <el-input v-model="loginForm.username" prefix-icon="iconfont icon-user"></el-input>
+          <el-input
+            v-model="loginForm.username"
+            prefix-icon="iconfont icon-user"
+          ></el-input>
         </el-form-item>
         <!-- 密码 -->
         <el-form-item prop="password">
-          <el-input type="password" v-model="loginForm.password" prefix-icon="iconfont icon-3702mima"></el-input>
+          <el-input
+            type="password"
+            v-model="loginForm.password"
+            prefix-icon="iconfont icon-3702mima"
+          ></el-input>
         </el-form-item>
         <!-- 按钮 -->
         <el-form-item class="btns">
           <el-button type="primary" @click="login">登录</el-button>
           <el-button type="info" @click="resetLoginForm">重置</el-button>
-        </el-form-item> 
+        </el-form-item>
       </el-form>
     </div>
   </div>
@@ -29,13 +42,13 @@
 <script>
 export default {
   // 定义属性
-  data () {
+  data() {
     return {
       // 表单数据
       loginForm: {
         username: '',
         password: ''
-      },   
+      },
       // 验证规则
       loginFormRules: {
         username: [
@@ -49,24 +62,25 @@ export default {
       }
     }
   },
-  methods:{
+  methods: {
     // 点击重置按钮，重置登录表单
-    resetLoginForm(){
+    resetLoginForm() {
       // console.log(this); 可以访问到form表单实例 $refs
-      this.$refs.LoginFormRef.resetFields();
+      this.$refs.LoginFormRef.resetFields()
     },
-     login(){
+    // 登录
+    login() {
       // 先获取表达的引用对象，调用validate()
-      this.$refs.LoginFormRef.validate(async valid=>{
+      this.$refs.LoginFormRef.validate(async valid => {
         //该回调函数会在校验结束后被调用，并传入两个参数：是否校验成功和未通过校验的字段。若不传入回调函数，则会返回一个 promise
         // console.log(valid);
         //判断valid的值是否为true
-        if(!valid) return;
+        if (!valid) return
         // 将获取的表单数据传递给登录接口
         try {
-          const {data:res} = await this.$http.post('login',this.loginForm)
+          const { data: res } = await this.$http.post('login', this.loginForm)
           // console.log(res);
-          if(res.meta.status !== 200) return this.$message.error('登录失败')
+          if (res.meta.status !== 200) return this.$message.error('登录失败')
           this.$message.success('登录成功')
           // 1.将登录成功之后的token，保存到客户端的sessionStorage中
           //   1.1 项目中出了登录之外的其他api接口，必须在登录之后才能访问
@@ -74,20 +88,18 @@ export default {
           // 2.通过编程式导航跳转到后台主页，路由地址是/home
 
           // console.log(res); res的data下有生成的token令牌
-          window.sessionStorage.setItem('token',res.data.token)
+          window.sessionStorage.setItem('token', res.data.token)
           this.$router.push('/home')
-          
         } catch (error) {
-          console.log(error);
+          console.log(error)
         }
-        
       })
     }
   }
 }
 </script>
 
-<style scoped lang='less'>
+<style scoped lang="less">
 .login_container {
   background-color: #2b5b6b;
   height: 100%;
