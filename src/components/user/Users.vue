@@ -88,7 +88,7 @@
         @current-change="handleCurrentChange"
         :current-page="queryInfo.pagenum"
         :page-sizes="[1, 2, 5, 10]"
-        :page-size="queryInfo.querysize"
+        :page-size="queryInfo.pagesize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       >
@@ -300,15 +300,13 @@ export default {
       // console.log(res)
     },
     // 监听pagesize改变的事件
-    handleSizeChange(newSize) {
-      console.log(newSize)
+    handleSizeChange(newSize) { 
       this.queryInfo.pagesize = newSize
       this.getUserList()
     },
     // 监听页码值改变的事件
-    handleCurrentChange(newPage) {
-      console.log(newPage)
-      this.queryInfo.pagesnum = newPage
+    handleCurrentChange(newPage) { 
+      this.queryInfo.pagenum = newPage
       this.getUserList()
     },
     // 监听switch开关的改变
@@ -406,4 +404,5 @@ export default {
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+</style>

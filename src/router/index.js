@@ -4,17 +4,30 @@ import VueRouter from "vue-router";
 Vue.use(VueRouter);
 const routes = [
   { path: "/", redirect: "/login" },
-  { path: "/login", component: () => import("@/components/Login.vue") },
+  { path: "/login", name:'login',component: () => import("@/components/Login.vue") },
   { path: "/home", 
+    name:'home',
     component: () => import("@/components/Home.vue"),
     redirect:'/welcome',
     children:[
       {
       path:'/welcome',
+      name:'welcome',
       component: () => import("@/components/Welcome.vue")},
       {
         path:'/users',
+        name:'users',
         component: () => import("@/components/user/Users.vue")
+      },
+      {
+        path:'/rights',
+        name:'rights',
+        component: () => import("@/components/power/Rights.vue")
+      },
+      {
+        path:'/roles',
+        name:'roles',
+        component: () => import("@/components/power/Roles.vue")
       }
     ]
   }
