@@ -4,7 +4,7 @@ import Vue from 'vue'
 // import { Input } from 'element-ui'
 // import { Message } from 'element-ui';//弹框组件
 
-import { Button, Form, FormItem, Input, Message,Container, Header, Aside, Main, Submenu, Menu, MenuItem,Breadcrumb, BreadcrumbItem,Card,Row,Col, Table, TableColumn, Switch, Tooltip, Pagination, Dialog, MessageBox,Tag} from 'element-ui'
+import { Button, Form, FormItem, Input, Message,Container, Header, Aside, Main, Submenu, Menu, MenuItem,Breadcrumb, BreadcrumbItem,Card,Row,Col, Table, TableColumn, Switch, Tooltip, Pagination, Dialog, MessageBox,Tag,Tree} from 'element-ui'
 
 Vue.use(Button)
 Vue.use(Form)
@@ -29,6 +29,7 @@ Vue.use(Tooltip)
 Vue.use(Pagination)
 Vue.use(Dialog)
 Vue.use(Tag)
+Vue.use(Tree)
 // 自定义属性，通过this访问到message
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

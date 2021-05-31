@@ -72,13 +72,27 @@
               <el-button size="mini" type="danger" icon="el-icon-delete"
                 >删除</el-button
               >
-              <el-button size="mini" type="warning" icon="el-icon-setting"
+              <el-button size="mini" type="warning" icon="el-icon-setting" @click="showSetRightDialog(scope.row)"
                 >分配权限</el-button
               >
             </template>
           </el-table-column>
       </el-table>
     </el-card>
+
+    <!-- 分配权限的对话框 -->
+    <el-dialog
+      title="分配权限"
+      :visible.sync="setRightDialogVisible"
+      width="50%"
+      @close="setRightDialogClose">
+      <!-- 树形控件 -->
+      <el-tree :data="rightList" :props="treeProps" show-checkbox node-key='id' default-expand-all :default-checked-keys="defKeys"></el-tree>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="setRightDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="setRightDialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -87,7 +101,16 @@ export default {
   // 定义属性
   data() {
     return {
-      roleslist: [] //所有角色列表
+      roleslist: [], //所有角色列表
+      setRightDialogVisible:false,//控制权限分配的对话框
+      rightList:[],//所有权限的数据
+      //树形控件的数据
+      treeProps:{
+        label:'authName',//看到的哪个属性
+        children:'children'// 父子间使用哪个属性嵌套的
+      },
+      // 已经选中的节点
+      defKeys:[]
     }
   },
   created() {
@@ -102,6 +125,7 @@ export default {
       }
       this.roleslist = res.data
     },
+    // 移除标签权限
     async removeTag(role,rightId){
         const confirmResult = await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -121,6 +145,33 @@ export default {
         // 因为返回的值中的权限已经是最新的了，所以重新赋值一下就行了
         role.children = res.data
         this.$message.info('删除权限成功')
+    },
+    // 展示分配权限对话框函数
+    async showSetRightDialog(role){
+      // 获取所有权限的数据
+      const { data:res } = await this.$http.get('rights/tree')
+      // console.log(res);
+      if(res.meta.status !== 200){
+        return this.$message.error('获取权限数据失败')
+      }
+      this.rightList = res.data
+
+     // 获取三级递归节点
+     this.getLeafKeys(role,this.defKeys)
+
+      this.setRightDialogVisible = true
+    },
+    // 通过递归的函数，获取角色下所有的三级权限的id，并保存到defKeys数组中
+    getLeafKeys(node,arr){
+      // 如果node节点不包含children，则为三级节点
+      if(!node.children){
+        return arr.push(node.id)
+      }
+      node.children.forEach(item =>this.getLeafKeys(item,arr));
+    },
+    // 监听关闭分配权限对话框，清除数组中的三级权限
+    setRightDialogClose(){
+      this.defKeys = []
     }
   }
 }
