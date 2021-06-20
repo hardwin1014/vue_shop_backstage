@@ -385,7 +385,6 @@ export default {
     //修改用户
     async showEditDialog(id) {
       const { data: res } = await this.$http.get(`users/${id}`)
-      // console.log(res)
       if (res.meta.status !== 200) {
         return this.$message.error('获取用户信息失败！')
       }
@@ -445,7 +444,6 @@ export default {
       if (res.meta.status !== 200) {
         return this.$message.error('获取角色列表失败')
       }
-
       this.rolesList = res.data 
       this.setRoleDialogVisible = true
     },

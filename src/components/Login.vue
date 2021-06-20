@@ -4,7 +4,7 @@
     <div class="login_box">
       <!-- 头像 -->
       <div class="avatar_box">
-        <img src="../assets/logo.png" alt="" />
+        <img src="../assets/326.jpg" alt="" />
       </div>
       <!-- 登录表单 -->
       <el-form
