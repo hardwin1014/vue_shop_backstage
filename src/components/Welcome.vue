@@ -1,6 +1,6 @@
 <template>
   <div>
-    欢迎登录
+    欢迎杰哥
   </div>
 </template>
 

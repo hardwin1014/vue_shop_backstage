@@ -2,6 +2,9 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+// 引入vue-table-with-tree-grid插件
+import TreeTable from 'vue-table-with-tree-grid' 
+
 // 导入字体图标
 import '@/assets/fonts/iconfont.css'
 // 引入elementui按需导入文件
@@ -25,6 +28,8 @@ Vue.prototype.$http = axios
 import "@/assets/style/css/global.css"
 Vue.config.productionTip = false
 
+// 全局注册table插件
+Vue.component('tree-table',TreeTable)
 new Vue({
   router,
   store,

@@ -6,7 +6,7 @@
         <div class="userPic">
           <img src="~@/assets/326.jpg" alt="" />
         </div>
-        <span>电商后台管理系统</span>
+        <span>杰哥后台管理系统</span>
       </div>
       <el-button type="info" @click="logout">退出</el-button>
     </el-header>
