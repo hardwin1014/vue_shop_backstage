@@ -48,10 +48,10 @@
           <el-tag size="mini" type="warning" v-else>三级</el-tag>
         </template>
         <template slot="opt" slot-scope="scope">
-          <el-button type="primary" icon="el-icon-edit" size="mini"
+          <el-button type="primary" icon="el-icon-edit" size="mini" @click="editCate(scope.row.cat_id)"
             >编辑</el-button
           >
-          <el-button type="danger" icon="el-icon-delete" size="mini"
+          <el-button type="danger" icon="el-icon-delete" size="mini" @click="delCate(scope.row.cat_id)"
             >删除</el-button
           >
         </template>
@@ -83,8 +83,8 @@
         ref="addCateFormRef"
         label-width="100px"
       >
-        <el-form-item label="分类名称" prop="cate_name">
-          <el-input v-model="addCateForm.cate_name"></el-input>
+        <el-form-item label="分类名称" prop="cat_name">
+          <el-input v-model="addCateForm.cat_name"></el-input>
         </el-form-item>
         <el-form-item label="父级分类"> 
           <!-- options用来指定数据源 -->
@@ -104,6 +104,30 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="addCateDialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="addCate">确 定</el-button
+        >
+      </div>
+    </el-dialog>
+
+    <!-- 编辑分类的对话框 -->
+    <el-dialog
+      title="编辑分类"
+      :visible.sync="editCateDialogFormVisible"
+      width="50%"
+    >
+      <!-- 添加分类的表单 -->
+      <el-form
+        :model="editCateForm"
+        :rules="editCateFormRules"
+        ref="editCateFormRef"
+        label-width="100px"
+      >
+        <el-form-item label="分类名称" prop="cat_name">
+          <el-input v-model="editCateForm.cat_name"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editCateDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editCateSure">确 定</el-button
         >
       </div>
     </el-dialog>
@@ -148,6 +172,7 @@ export default {
         pagesize: 5
       },
       addCateDialogFormVisible: false, // 控制添加对话框
+      editCateDialogFormVisible:false, // 控制编辑对话框
       form: {
         name: '',
         region: '',
@@ -160,13 +185,18 @@ export default {
       },
       // 添加分类的表单
       addCateForm: {
-        cate_name: '', //将要添加分类的名字
+        cat_name: '', //将要添加分类的名字
         cat_pid: 0, // 父级分类id
         cat_level: 0 // 当前等级默认等级为一级分类
       },
       // 添加分类表单的验证规则对象
       addCateFormRules: {
-        cate_name: [
+        cat_name: [
+          { required: true, message: '请输入分类名称', trigger: 'blur' }
+        ]
+      },
+      editCateFormRules: {
+        cat_name: [
           { required: true, message: '请输入分类名称', trigger: 'blur' }
         ]
       },
@@ -179,7 +209,12 @@ export default {
         children: 'children'
       },
       // 选中的父级分类的ID数组
-      selectedKeys: []
+      selectedKeys: [],
+      // 编辑分类的form
+      editCateForm: {
+        cat_name: '',
+        cat_id: 0
+      }
     }
   },
   created () {
@@ -220,7 +255,6 @@ export default {
     },
     // 选择项发生变化，触发这个函数
     parentCateChanged () {
-      console.log(this.selectedKeys);
       // 如果selectedKeys数组中的length大于0，证明选中了分类
       if(this.selectedKeys.length > 0){
         // 父级分类的id
@@ -237,7 +271,58 @@ export default {
     },
     // 点击按钮，添加新的分类
     addCate(){
-      console.log(this.addCateForm);
+      // 表单验证
+      this.$refs.addCateFormRef.validate(async valid=>{
+        if(!valid) return
+        const {data:res} = await this.$http.post('categories',this.addCateForm)
+        console.log(res);
+        if(res.meta.status !==201 ){
+          return this.$message.error('添加分类失败！')
+        }
+        this.$message.success('添加分类成功！')
+        this.getCateList()
+        this.addCateDialogFormVisible = false
+      })
+    },
+    // 删除
+    async delCate(id){
+      const {data:res} = await this.$http.delete(`categories/${id}`)
+      if(res.meta.status !== 200) return this.$message.error('删除失败')
+      this.$confirm('此操作将永久删除该分类, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.getCateList()
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+    },
+    // 修改回显
+    async editCate( id ){
+      const {data:res} = await this.$http.get(`categories/${id}`)
+      this.editCateForm.cat_name = res.data.cat_name
+      this.editCateForm.cat_id = res.data.cat_id
+      this.editCateDialogFormVisible = true
+    },
+    // 修改确定
+    editCateSure(){
+      this.$refs.editCateFormRef.validate(async valid=>{
+        if(!valid) return
+        const {data:res} = await this.$http.put(`categories/${this.editCateForm.cat_id}`,{cat_name:this.editCateForm.cat_name})
+        console.log(res);
+        if(res.meta.status !== 200) return this.$message.error('修改失败！')
+        this.$message.success('修改成功！')
+        this.getCateList()
+        this.editCateDialogFormVisible = false
+      })
     },
     // 监听对话框的关闭事件，如何重置表单
     addCateDialogClosed(){
@@ -254,5 +339,9 @@ export default {
 <style lang="less">
 .treeTable {
   margin-top: 15px;
+}
+.el-cascader-panel{
+  height: 50vh;
+  overflow: hidden;
 }
 </style>
