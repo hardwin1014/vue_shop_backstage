@@ -4,7 +4,40 @@ import Vue from 'vue'
 // import { Input } from 'element-ui'
 // import { Message } from 'element-ui';//弹框组件
 
-import { Button, Form, FormItem, Input, Message,Container, Header, Aside, Main, Submenu, Menu, MenuItem,Breadcrumb, BreadcrumbItem,Card,Row,Col, Table, TableColumn, Switch, Tooltip, Pagination, Dialog, MessageBox,Tag,Tree,Select,Option,Cascader,Alert,Tabs,TabPane} from 'element-ui'
+import {
+  Button,
+  Form,
+  FormItem,
+  Input,
+  Message,
+  Container,
+  Header,
+  Aside,
+  Main,
+  Submenu,
+  Menu,
+  MenuItem,
+  Breadcrumb,
+  BreadcrumbItem,
+  Card,
+  Row,
+  Col,
+  Table,
+  TableColumn,
+  Switch,
+  Tooltip,
+  Pagination,
+  Dialog,
+  MessageBox,
+  Tag,
+  Tree,
+  Select,
+  Option,
+  Cascader,
+  Alert,
+  Tabs,
+  TabPane
+} from 'element-ui'
 
 Vue.use(Button)
 Vue.use(Form)

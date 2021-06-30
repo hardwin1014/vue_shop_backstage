@@ -25,8 +25,12 @@
       </el-row>
       <!-- tab页签区域 -->
       <el-tabs v-model="activeName" @tab-click="handleTabClick">
-        <el-tab-pane label="用户管理" name="first">用户管理</el-tab-pane>
-        <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>
+        <el-tab-pane label="动态参数" name="many">
+          <el-button :disabled="isBtnDisable" type="primary" size="mini">添加参数</el-button>
+        </el-tab-pane>
+        <el-tab-pane label="静态属性" name="only">
+          <el-button :disabled="isBtnDisable" type="primary" size="mini">添加属性</el-button>
+        </el-tab-pane>
       </el-tabs>
     </el-card>
   </div>
@@ -45,7 +49,7 @@ export default {
         children:'children'
       }, 
       selectedCateKeys:[], // 级联选择框，双向绑定到的数组
-      activeName: 'first', //被激活的页签名称
+      activeName: 'many', //被激活的页签名称
     }
   },
   created() {
@@ -62,18 +66,49 @@ export default {
       this.cateList = res.data
     },
     // 级联选择项选择框变化，会触发
-    handleChange(){
-      // 判断是否是三级分类
+    async handleChange(){
+      this.getParamsData()
+    },
+    // tab页签点击事件的处理函数
+    handleTabClick() {
+      this.getParamsData()
+      // console.log(this.activeName); 打印的是el-tab-pane的name属性
+    },
+    // 获取参数的列表数据
+    async getParamsData(){
+       // 判断是否是三级分类
       if(this.selectedCateKeys.length!==3){
         this.selectedCateKeys = []
         return
       }
+      console.log(this.selectedCateKeys);
+      // 根据所选分类的ID和当前所处的面板，获取对应的参数
+      const{data:res} = await this.$http.get(`categories/${this.cateId}/attributes`,{params: {sel:this.activeName}})
+      console.log(res);
+      if(res.meta.status !== 200){
+        return this.$message.error('获取参数列表失败！')
+      }
+      this.$message.success('获取参数列表成功！')
+      //  this. = res.data
+    }
+  },
+  computed:{
+    // 如果按钮需要被禁用，则返回true ，否则返回false
+    isBtnDisable(){
+      if(this.selectedCateKeys.length !== 3){
+        return true
+      }else{
+        return false
+      }
     },
-    // tab页签点击事件的处理函数
-    handleTabClick() {
-    
+    cateId(){
+      if(this.selectedCateKeys.length === 3){
+        return this.selectedCateKeys[2]
+      }
+      return null
     }
   }
+  
 }
 </script>
 
