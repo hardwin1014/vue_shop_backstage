@@ -61,11 +61,12 @@
     </el-card>
     <!-- 新增对话框 -->
     <el-dialog :title="'添加'+titleText" :visible.sync="addDialogFormVisible" width="50%">
-      <!-- <el-form :model="form">
-        <el-form-item label="活动名称">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+      <!-- 添加参数的对话框 -->
+      <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px" class="demo-ruleForm">
+        <el-form-item :label="titleText" prop="attr_name">
+          <el-input v-model="addForm.attr_name"></el-input>
         </el-form-item>
-      </el-form> -->
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addDialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="addDialogFormVisible = false">确 定</el-button>
@@ -90,7 +91,15 @@ export default {
       activeName: 'many', //被激活的页签名称
       manyTableData: [], // 动态参数
       onlyTableData: [],  // 静态参数
-      addDialogFormVisible: false
+      addDialogFormVisible: false,
+      addForm: {
+        attr_name: ''
+      }, // 添加参数的表单数据对象
+      addFormRules:{
+        attr_name:[{
+          required:true,message:'请输入参数名称',trigger:'blur'
+        }]
+      }
     }
   },
   created() {
