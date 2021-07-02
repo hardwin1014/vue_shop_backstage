@@ -153,6 +153,7 @@ export default {
           attr_name: this.addForm.attr_name,
           attr_sel: this.activeName
         })
+        // console.log(res);
         console.log(res);
       })
       this.addDialogFormVisible = false
