@@ -69,7 +69,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addDialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addDialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="addParams">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -143,6 +143,19 @@ export default {
       }else{
         this.onlyTableData = res.data
       }
+    },
+    // 点击按钮添加参数
+    addParams(){
+      // 进行预验证
+      this.$ref.addFormRef.validate(async valid => {
+        if(!valid) return
+        const {data:res} = await this.$http.post(`categories/${this.cateId}/attributes`,{
+          attr_name: this.addForm.attr_name,
+          attr_sel: this.activeName
+        })
+        console.log(res);
+      })
+      this.addDialogFormVisible = false
     }
   },
   computed:{
