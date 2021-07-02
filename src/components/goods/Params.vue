@@ -154,7 +154,8 @@ export default {
           attr_sel: this.activeName
         })
         // console.log(res);
-        console.log(res);
+        if(res.meta !== 201) return this.$message.error('创建失败！')
+        // res.data = 
       })
       this.addDialogFormVisible = false
     }
