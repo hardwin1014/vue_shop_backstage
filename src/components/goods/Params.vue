@@ -147,7 +147,7 @@ export default {
     // 点击按钮添加参数
     addParams(){
       // 进行预验证
-      this.$ref.addFormRef.validate(async valid => {
+      this.$refs.addFormRef.validate(async valid => {
         if(!valid) return
         const {data:res} = await this.$http.post(`categories/${this.cateId}/attributes`,{
           attr_name: this.addForm.attr_name,
