@@ -37,8 +37,7 @@
             type="primary"
             size="mini"
             @click="addDialogFormVisible = true"
-            >添加参数</el-button
-          >
+            >添加参数</el-button>
           <el-table :data="manyTableData" border stripe>
             <!-- 展开行 -->
             <el-table-column type="expand">
@@ -47,7 +46,7 @@
                 <el-tag
                   v-for="(item, index) in scope.row.attr_vals"
                   :key="index"
-                  :disable-transitions="false"
+                  disable-transitions
                   closable
                   @close="handleClose(index, scope.row)"
                   >{{ item }}</el-tag>
@@ -113,7 +112,7 @@
                 <el-tag
                   v-for="(item, index) in scope.row.attr_vals"
                   :key="index"
-                  :disable-transitions="false"
+                  disable-transitions
                   closable
                   @close="handleClose(index, scope.row)"
                   >{{ item }}</el-tag>
@@ -300,11 +299,11 @@ export default {
         return this.$message.error('获取参数列表失败！')
       }
       res.data.forEach(item => {
-        item.attr_vals = item.attr_vals ? item.attr_vals.split(' ')||item.attr_vals.split(',') : []
+        item.attr_vals = item.attr_vals ? item.attr_vals.split(' ')||item.attr_vals.split(','): []
         // 控制文本框 的显示与隐藏
         item.inputVisible = false
         // 控制值
-        this.inputValue = ''
+        item.inputValue = ''
       })
       // 进行判断到底是哪个表格中
       if (this.activeName === 'many') {
@@ -397,6 +396,7 @@ export default {
     },
     // 文本失去焦点，或按下enter都会触发
     handleInputConfirm(row) {
+      console.log(row);
       if (row.inputValue.trim().length === 0) {
         row.inputValue = ''
         row.inputVisible = false
