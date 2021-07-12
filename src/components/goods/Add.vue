@@ -84,7 +84,8 @@
               :on-preview="handlePreview"
               :on-remove="handleRemove"
               list-type="picture"
-              :headers="headerObj">
+              :headers="headerObj"
+              :on-success="handleSuccess">
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-tab-pane>
@@ -106,7 +107,8 @@ export default {
         goods_price: '',
         goods_number: '',
         goods_weight: '',
-        goods_cate: [] // 商品所属的数组
+        goods_cate: [], // 商品所属的数组
+        pics: [] //图片的数组
       },
       cateList: [], // 商品分类列表
       addFormRules: {
@@ -203,11 +205,24 @@ export default {
     },
     // 处理图片预览
     handlePreview(){
-
+      // 1.获取将要删除的图片的临时路径
+      // 2.从pics数组中找到这个图片对应的索引值
+      // 3.调用splice方法，把图片信息对象，从pics数组中移除
     },
     // 处理移除图片的操作
-    handleRemove(){
-
+    handleRemove(file){
+      console.log(file);
+    },
+    // 图片上传成功
+    handleSuccess(response){
+      console.log(response);
+      // 先拼接得到一个图片信息对象
+      const picInfo = {
+        pic: response.data.tem_path
+      }
+      // 将图片信息对象push到pics数组中
+      this.addForm.pics.push(picInfo)
+      console.log(this.addForm);
     }
   },
   computed: {
