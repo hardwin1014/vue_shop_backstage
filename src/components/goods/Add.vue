@@ -93,6 +93,14 @@
         </el-tabs>
       </el-form>
     </el-card>
+    <!-- 图片预览 -->
+    <el-dialog
+      title="图片预览"
+      :visible.sync="previewVisible"
+      width="50%"
+      :before-close="handleClose">
+      <img :src="previewPath" alt="" class="previewPic">
+    </el-dialog>
   </div>
 </template>
 
@@ -149,7 +157,9 @@ export default {
       uploadUrl: 'http://127.0.0.1:8888/api/private/v1/upload',
       headerObj: {
         Authorization: window.sessionStorage.getItem('token')
-      }
+      },
+      previewPath: '', // 图片路径
+      previewVisible: false // 控制图片预览对话框
     }
   },
   created() {
@@ -204,22 +214,35 @@ export default {
       }
     },
     // 处理图片预览
-    handlePreview(){
+    handlePreview(file){
+      console.log(file);
       // 1.获取将要删除的图片的临时路径
-      // 2.从pics数组中找到这个图片对应的索引值
-      // 3.调用splice方法，把图片信息对象，从pics数组中移除
+      this.previewPath = file.response.data.url
+      this.previewVisible = true
+    },
+    // 关闭图片预览
+    handleClose(){
+      this.previewVisible = false
     },
     // 处理移除图片的操作
     handleRemove(file){
       console.log(file);
-    },
+      // 1.获取将要删除的图片的临时路径
+      const filePath = file.response.data.tmp_path
+      // 2. 从pics数组中，找到这个图片对应的索引值
+      const i = this.addForm.pics.findIndex(x => x.pic === filePath)
+      // 3.调用数组的splice方法，把图片信息对象，从pics数组中移除
+      this.addForm.pics.splice(i,1)
+      console.log(this.addForm);
+    }, 
     // 图片上传成功
     handleSuccess(response){
       console.log(response);
       // 先拼接得到一个图片信息对象
       const picInfo = {
-        pic: response.data.tem_path
+        pic: response.data.tmp_path
       }
+      console.log(picInfo);
       // 将图片信息对象push到pics数组中
       this.addForm.pics.push(picInfo)
       console.log(this.addForm);
@@ -243,5 +266,8 @@ export default {
 }
 .el-checkbox{
   margin: 0 5px 0 0 !important;
+}
+.previewPic{
+  width: 100%;
 }
 </style>

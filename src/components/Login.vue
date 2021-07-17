@@ -46,8 +46,8 @@ export default {
     return {
       // 表单数据
       loginForm: {
-        username: '',
-        password: ''
+        username: 'admin',
+        password: '123456'
       },
       // 验证规则
       loginFormRules: {
