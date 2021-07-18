@@ -9,6 +9,13 @@ import TreeTable from 'vue-table-with-tree-grid'
 import '@/assets/fonts/iconfont.css'
 // 引入elementui按需导入文件
 import './plugins/element.js'
+// 富文本编辑器
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css' // import styles
+import 'quill/dist/quill.snow.css' // for snow theme
+import 'quill/dist/quill.bubble.css' // for bubble theme
+
+Vue.use(VueQuillEditor, /* { default global options } */)
 
 import axios from "axios"
 // 配置请求路径

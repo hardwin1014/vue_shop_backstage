@@ -101,15 +101,14 @@ export default {
     // 分页大小变化
     handleSizeChange(newSize) {
       this.queryInfo.pagesize = newSize
-      this.goodsList()
+      this.getGoodsList()
     },
     // 分页
     handleCurrentChange(newPage) {
       this.queryInfo.pagenum = newPage
-      this.goodsList()
+      this.getGoodsList()
     },
     async removeById(id){
-      console.log(id);
       const confirmResult = await this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

@@ -53,9 +53,9 @@
             <el-form-item label="商品数量" prop="goods_number">
               <el-input v-model="addForm.goods_number"></el-input>
             </el-form-item>
-            <el-form-item label="商品分类" prop="goods_cate">
+            <el-form-item label="商品分类" prop="goods_cat">
               <el-cascader
-                v-model="addForm.goods_cate"
+                v-model="addForm.goods_cat"
                 :options="cateList"
                 expand-trigger="hover"
                 :props="cateProps"
@@ -65,15 +65,28 @@
           </el-tab-pane>
           <el-tab-pane label="商品参数" name="1">
             <!-- 渲染表单item项 -->
-            <el-form-item :label="item.attr_name" v-for="item in manyTableData" :key="item.attr_id">
+            <el-form-item
+              :label="item.attr_name"
+              v-for="item in manyTableData"
+              :key="item.attr_id"
+            >
               <!-- 复选框组 -->
               <el-checkbox-group v-model="item.attr_vals">
-                <el-checkbox border :label="cb" v-for="(cb,i) in item.attr_vals" :key="i"></el-checkbox>
+                <el-checkbox
+                  border
+                  :label="cb"
+                  v-for="(cb, i) in item.attr_vals"
+                  :key="i"
+                ></el-checkbox>
               </el-checkbox-group>
             </el-form-item>
           </el-tab-pane>
           <el-tab-pane label="商品属性" name="2">
-            <el-form-item :label="item.attr_name" v-for="item in onlyTableData" :key="item.attr_id">
+            <el-form-item
+              :label="item.attr_name"
+              v-for="item in onlyTableData"
+              :key="item.attr_id"
+            >
               <el-input v-model="item.attr_vals"></el-input>
             </el-form-item>
           </el-tab-pane>
@@ -85,11 +98,19 @@
               :on-remove="handleRemove"
               list-type="picture"
               :headers="headerObj"
-              :on-success="handleSuccess">
+              :on-success="handleSuccess"
+            >
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-tab-pane>
-          <el-tab-pane label="商品内容" name="4"></el-tab-pane>
+          <el-tab-pane label="商品内容" name="4">
+            <!-- 富文本编辑器 -->
+            <quill-editor v-model="addForm.goods_introduce"></quill-editor>
+            <!-- 添加商品的按钮 -->
+            <el-button type="primary" class="addBtn" @click="add"
+              >添加商品</el-button
+            >
+          </el-tab-pane>
         </el-tabs>
       </el-form>
     </el-card>
@@ -98,13 +119,15 @@
       title="图片预览"
       :visible.sync="previewVisible"
       width="50%"
-      :before-close="handleClose">
-      <img :src="previewPath" alt="" class="previewPic">
+      :before-close="handleClose"
+    >
+      <img :src="previewPath" alt="" class="previewPic" />
     </el-dialog>
   </div>
 </template>
 
 <script>
+import _ from 'lodash'
 export default {
   // 定义属性
   data() {
@@ -115,37 +138,51 @@ export default {
         goods_price: '',
         goods_number: '',
         goods_weight: '',
-        goods_cate: [], // 商品所属的数组
-        pics: [] //图片的数组
+        goods_cat: [], // 商品所属的数组
+        pics: [], //图片的数组
+        goods_introduce: '',
+        attrs: []
       },
       cateList: [], // 商品分类列表
       addFormRules: {
-        goods_name:[
+        goods_name: [
           {
-            required: true,message:'请输入商品名称',trigger: 'blur'
+            required: true,
+            message: '请输入商品名称',
+            trigger: 'blur'
           }
         ],
-        goods_price:[
+        goods_price: [
           {
-            required: true,message:'请输入商品价格',trigger: 'blur'
+            required: true,
+            message: '请输入商品价格',
+            trigger: 'blur'
           }
         ],
-        goods_number:[
+        goods_number: [
           {
-            required: true,message:'请输入商品数量',trigger: 'blur'
+            required: true,
+            message: '请输入商品数量',
+            trigger: 'blur'
           }
         ],
-        goods_weight:[
+        goods_weight: [
           {
-            required: true,message:'请输入商品重量',trigger: 'blur'
+            required: true,
+            message: '请输入商品重量',
+            trigger: 'blur'
           }
         ],
-        goods_cate:[{
-          required: true,message:'请选择商品分类',trigger: 'blur'
-        }]
+        goods_cat: [
+          {
+            required: true,
+            message: '请选择商品分类',
+            trigger: 'blur'
+          }
+        ]
       },
       cateProps: {
-        label: 'cat_name',// 看到的值
+        label: 'cat_name', // 看到的值
         value: 'cat_id', // 选中的值
         children: 'children'
       },
@@ -165,93 +202,132 @@ export default {
   created() {
     this.getCateList()
   },
-  methods:{
+  methods: {
     // 获取分类数据
-    async getCateList(){
-      const {data:res} = await this.$http.get(`categories`)
-      if(res.meta.status !== 200){
+    async getCateList() {
+      const { data: res } = await this.$http.get(`categories`)
+      if (res.meta.status !== 200) {
         return this.$message.error('获取商品列表失败！')
       }
       this.cateList = res.data
     },
     // 级联选择器变化,会触发函数
-    handleChange(){
-      if(this.addForm.goods_cate.length !== 3){
-        this.addForm.goods_cate = []
+    handleChange() {
+      if (this.addForm.goods_cat.length !== 3) {
+        this.addForm.goods_cat = []
       }
     },
     // 监听标签页,即将离开标签页
-    beforeTabLeave(activeName, oldActiveName){
-      if(oldActiveName === '0' && this.addForm.goods_cate.length !== 3){
+    beforeTabLeave(activeName, oldActiveName) {
+      if (oldActiveName === '0' && this.addForm.goods_cat.length !== 3) {
         this.$message.info('请先选择商品分类')
         return false
       }
     },
     // 点击tags触发
-    async tabClicked(){
+    async tabClicked() {
       // console.log(this.activeIndex);
       // 证明访问的是动态面板
-      if(this.activeIndex === '1'){
-        const {data:res} = await this.$http.get(`categories/${this.cateId}/attributes`,{
-          params:{sel:'many'}
-        })
-        if(res.meta.status !== 200){
+      if (this.activeIndex === '1') {
+        const { data: res } = await this.$http.get(
+          `categories/${this.cateId}/attributes`,
+          {
+            params: { sel: 'many' }
+          }
+        )
+        if (res.meta.status !== 200) {
           return this.$message.error('获取动态参数列表失败!')
         }
-        console.log(res.data);
+        console.log(res.data)
         res.data.forEach(item => {
-          item.attr_vals = item.attr_vals.length === 0 ? [] : item.attr_vals.split(',')||item.attr_vals.split(' ')
+          item.attr_vals =
+            item.attr_vals.length === 0
+              ? []
+              : item.attr_vals.split(',') || item.attr_vals.split(' ')
         })
         this.manyTableData = res.data
-      } else if(this.activeIndex === '2') {
-        const {data:res} = await this.$http.get(`categories/${this.cateId}/attributes`,{params:{sel:'only'}})
-        console.log(res);
-        if(res.meta.status !== 200){
+      } else if (this.activeIndex === '2') {
+        const { data: res } = await this.$http.get(
+          `categories/${this.cateId}/attributes`,
+          {
+            params: { sel: 'only' }
+          }
+        )
+        console.log(res)
+        if (res.meta.status !== 200) {
           return this.$message.error('获取静态属性失败！')
         }
-        console.log(res.data);
+        console.log(res.data)
         this.onlyTableData = res.data
       }
     },
     // 处理图片预览
-    handlePreview(file){
-      console.log(file);
+    handlePreview(file) {
+      console.log(file)
       // 1.获取将要删除的图片的临时路径
       this.previewPath = file.response.data.url
       this.previewVisible = true
     },
     // 关闭图片预览
-    handleClose(){
+    handleClose() {
       this.previewVisible = false
     },
     // 处理移除图片的操作
-    handleRemove(file){
-      console.log(file);
+    handleRemove(file) {
+      console.log(file)
       // 1.获取将要删除的图片的临时路径
       const filePath = file.response.data.tmp_path
       // 2. 从pics数组中，找到这个图片对应的索引值
       const i = this.addForm.pics.findIndex(x => x.pic === filePath)
       // 3.调用数组的splice方法，把图片信息对象，从pics数组中移除
-      this.addForm.pics.splice(i,1)
-      console.log(this.addForm);
-    }, 
+      this.addForm.pics.splice(i, 1)
+      console.log(this.addForm)
+    },
     // 图片上传成功
-    handleSuccess(response){
-      console.log(response);
+    handleSuccess(response) {
+      console.log(response)
       // 先拼接得到一个图片信息对象
       const picInfo = {
         pic: response.data.tmp_path
       }
-      console.log(picInfo);
+      console.log(picInfo)
       // 将图片信息对象push到pics数组中
       this.addForm.pics.push(picInfo)
-      console.log(this.addForm);
+    },
+    add() {
+      this.$refs.addFormRef.validate(async valid => {
+        if (!valid) {
+          return this.$message.error('请填写必要的表单项！')
+        }
+        // 执行添加操作
+        // lodash 深拷贝插件
+        const form = _.cloneDeep(this.addForm)
+        form.goods_cat = form.goods_cat.join(',')
+        // 处理动态参数和静态属性
+        this.manyTableData.forEach(item => {
+          const newInfo = { attr_id: item.attr_id, attr_value: item.attr_vals.join(' ') }
+          this.addForm.attrs.push(newInfo)
+        })
+        this.onlyTableData.forEach(item => {
+          const newInfo = {attr_id:item.attr_id,attr_value:item.attr_vals}
+          this.addForm.attrs.push(newInfo)
+        })
+        form.attrs = this.addForm.attrs
+        // 发起请求添加商品
+        const {data: res} = await this.$http.post('goods',form)
+        console.log(res)
+        if(res.meta.status !== 201){
+          return this.$message.error('添加商品失败！')
+        }
+        this.$message.success('添加商品成功！')
+        this.$router.push('/goods')
+      })
     }
   },
   computed: {
     cateId() {
-      if(this.addForm.goods_cate.length === 3){
-        return this.addForm.goods_cate[2] // 返回三级id
+      if (this.addForm.goods_cat.length === 3) {
+        return this.addForm.goods_cat[2] // 返回三级id
       }
       return null
     }
@@ -264,10 +340,13 @@ export default {
   height: 50vh;
   overflow: hidden;
 }
-.el-checkbox{
+.el-checkbox {
   margin: 0 5px 0 0 !important;
 }
-.previewPic{
+.previewPic {
   width: 100%;
+}
+.addBtn {
+  margin-top: 15px;
 }
 </style>
