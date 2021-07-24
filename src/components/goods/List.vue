@@ -43,6 +43,7 @@
               type="primary"
               size="small"
               icon="el-icon-edit"
+              @click="editShow(scoped.row.goods_id)"
             ></el-button>
             <el-button
               type="danger"
@@ -126,6 +127,14 @@ export default {
     },
     goAddPage(){
       this.$router.push('/goods/add')
+    },
+    // 修改
+    async editShow(id) {
+      const {data: res} = await this.$http.get(`goods/${id}`)
+      this.$router.push({  
+        path: '/goods/edit',
+        query: res.data
+      })
     }
   }
 }
