@@ -128,7 +128,7 @@
 import _ from 'lodash'
 export default {
   // 定义属性
-  data() {
+  data () {
     return {
       activeIndex: '0',
       editForm: {
@@ -137,7 +137,7 @@ export default {
         goods_number: '',
         goods_weight: '',
         goods_cat: [], // 商品所属的数组
-        pics: [], //图片的数组
+        pics: [], // 图片的数组
         goods_introduce: '',
         attrs: []
       },
@@ -184,7 +184,7 @@ export default {
         value: 'cat_id', // 选中的值
         children: 'children'
       },
-      //动态参数列表
+      // 动态参数列表
       manyTableData: [],
       // 静态属性参数列表
       onlyTableData: [],
@@ -197,36 +197,36 @@ export default {
       previewVisible: false // 控制图片预览对话框
     }
   },
-  created() {
+  created () {
     this.getCateList()
     this.editForm = this.$route.query
-    this.editForm.goods_cat = this.$route.query.goods_cat.split(',').map(Number);
+    this.editForm.goods_cat = this.$route.query.goods_cat.split(',').map(Number)
     this.editForm.pics = this.$route.query.pics
   },
   methods: {
     // 获取分类数据
-    async getCateList() {
-      const { data: res } = await this.$http.get(`categories`)
+    async getCateList () {
+      const { data: res } = await this.$http.get('categories')
       if (res.meta.status !== 200) {
         return this.$message.error('获取商品列表失败！')
       }
       this.cateList = res.data
     },
     // 级联选择器变化,会触发函数
-    handleChange() {
+    handleChange () {
       if (this.editForm.goods_cat.length !== 3) {
         this.editForm.goods_cat = []
       }
     },
     // 监听标签页,即将离开标签页
-    beforeTabLeave(activeName, oldActiveName) {
+    beforeTabLeave (activeName, oldActiveName) {
       if (oldActiveName === '0' && this.editForm.goods_cat.length !== 3) {
         this.$message.info('请先选择商品分类')
         return false
       }
     },
     // 点击tags触发
-    async tabClicked() {
+    async tabClicked () {
       // console.log(this.activeIndex);
       // 证明访问的是动态面板
       if (this.activeIndex === '1') {
@@ -260,16 +260,16 @@ export default {
       }
     },
     // 处理图片预览
-    handlePreview(file) {
+    handlePreview (file) {
       this.previewPath = file.response.data.url
       this.previewVisible = true
     },
     // 关闭图片预览
-    handleClose() {
+    handleClose () {
       this.previewVisible = false
     },
     // 处理移除图片的操作
-    handleRemove(file) {
+    handleRemove (file) {
       // 1.获取将要删除的图片的临时路径
       const filePath = file.response.data.tmp_path
       // 2. 从pics数组中，找到这个图片对应的索引值
@@ -278,7 +278,7 @@ export default {
       this.editForm.pics.splice(i, 1)
     },
     // 图片上传成功
-    handleSuccess(response) {
+    handleSuccess (response) {
       // 先拼接得到一个图片信息对象
       const picInfo = {
         pic: response.data.tmp_path
@@ -286,7 +286,7 @@ export default {
       // 将图片信息对象push到pics数组中
       this.editForm.pics.push(picInfo)
     },
-    edit() {
+    edit () {
       this.$refs.editFormRef.validate(async valid => {
         if (!valid) {
           return this.$message.error('请填写必要的表单项！')
@@ -301,13 +301,13 @@ export default {
           this.editForm.attrs.push(newInfo)
         })
         this.onlyTableData.forEach(item => {
-          const newInfo = {attr_id:item.attr_id,attr_value:item.attr_vals}
+          const newInfo = { attr_id: item.attr_id, attr_value: item.attr_vals }
           this.editForm.attrs.push(newInfo)
         })
         form.attrs = this.editForm.attrs
         // 发起请求修改商品
-        const {data: res} = await this.$http.put(`goods/${this.$route.query.goods_id}`,form)
-        if(res.meta.status !== 200){
+        const { data: res } = await this.$http.put(`goods/${this.$route.query.goods_id}`, form)
+        if (res.meta.status !== 200) {
           return this.$message.error('修改商品失败！')
         }
         this.$message.success('修改商品成功！')
@@ -316,7 +316,7 @@ export default {
     }
   },
   computed: {
-    cateId() {
+    cateId () {
       if (this.editForm.goods_cat.length === 3) {
         return this.editForm.goods_cat[2] // 返回三级id
       }

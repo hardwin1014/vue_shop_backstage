@@ -73,7 +73,7 @@
 <script>
 export default {
   // 定义属性
-  data() {
+  data () {
     return {
       queryInfo: {
         query: '',
@@ -84,13 +84,13 @@ export default {
       total: 0
     }
   },
-  created() {
+  created () {
     this.getGoodsList()
   },
   methods: {
     // 根据分页获取对应的商品列表
-    async getGoodsList() {
-      const { data: res } = await this.$http.get(`goods`, {
+    async getGoodsList () {
+      const { data: res } = await this.$http.get('goods', {
         params: this.queryInfo
       })
       if (res.meta.status !== 200) {
@@ -100,38 +100,38 @@ export default {
       this.total = res.data.total
     },
     // 分页大小变化
-    handleSizeChange(newSize) {
+    handleSizeChange (newSize) {
       this.queryInfo.pagesize = newSize
       this.getGoodsList()
     },
     // 分页
-    handleCurrentChange(newPage) {
+    handleCurrentChange (newPage) {
       this.queryInfo.pagenum = newPage
       this.getGoodsList()
     },
-    async removeById(id){
+    async removeById (id) {
       const confirmResult = await this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).catch(error=>error)
-      if(confirmResult !== 'confirm'){
+      }).catch(error => error)
+      if (confirmResult !== 'confirm') {
         return this.$message.info('已经取消删除')
       }
-      const {data:res} = await this.$http.delete(`goods/${id}`)
-      if(res.meta.status !== 200){
+      const { data: res } = await this.$http.delete(`goods/${id}`)
+      if (res.meta.status !== 200) {
         return this.$message.error('删除失败！')
       }
       this.$message.success('删除成功！')
       this.getGoodsList()
     },
-    goAddPage(){
+    goAddPage () {
       this.$router.push('/goods/add')
     },
     // 修改
-    async editShow(id) {
-      const {data: res} = await this.$http.get(`goods/${id}`)
-      this.$router.push({  
+    async editShow (id) {
+      const { data: res } = await this.$http.get(`goods/${id}`)
+      this.$router.push({
         path: '/goods/edit',
         query: res.data
       })

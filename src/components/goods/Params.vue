@@ -219,7 +219,7 @@
 <script>
 export default {
   // 定义属性
-  data() {
+  data () {
     return {
       cateList: [],
       // 级联选择框的配置对象
@@ -229,7 +229,7 @@ export default {
         children: 'children'
       },
       selectedCateKeys: [], // 级联选择框，双向绑定到的数组
-      activeName: 'many', //被激活的页签名称
+      activeName: 'many', // 被激活的页签名称
       manyTableData: [], // 动态参数
       onlyTableData: [], // 静态参数
       addDialogFormVisible: false,
@@ -258,12 +258,12 @@ export default {
       }
     }
   },
-  created() {
+  created () {
     this.getCateList()
   },
   methods: {
     // 获取所有的商品分类列表
-    async getCateList() {
+    async getCateList () {
       const { data: res } = await this.$http('categories')
       if (res.meta.status !== 200) {
         return this.$message.error('获取商品分类失败！')
@@ -271,16 +271,16 @@ export default {
       this.cateList = res.data
     },
     // 级联选择项选择框变化，会触发
-    async handleChange() {
+    async handleChange () {
       this.getParamsData()
     },
     // tab页签点击事件的处理函数
-    handleTabClick() {
+    handleTabClick () {
       this.getParamsData()
       // console.log(this.activeName); // 打印的是el-tab-pane的name属性
     },
     // 获取参数的列表数据
-    async getParamsData() {
+    async getParamsData () {
       // 判断是否是三级分类
       if (this.selectedCateKeys.length !== 3) {
         this.selectedCateKeys = []
@@ -299,7 +299,7 @@ export default {
         return this.$message.error('获取参数列表失败！')
       }
       res.data.forEach(item => {
-        item.attr_vals = item.attr_vals ? item.attr_vals.split(' ')||item.attr_vals.split(','): []
+        item.attr_vals = item.attr_vals ? item.attr_vals.split(' ') || item.attr_vals.split(',') : []
         // 控制文本框 的显示与隐藏
         item.inputVisible = false
         // 控制值
@@ -313,7 +313,7 @@ export default {
       }
     },
     // 点击按钮添加参数
-    addParams() {
+    addParams () {
       // 进行预验证
       this.$refs.addFormRef.validate(async valid => {
         if (!valid) return
@@ -332,15 +332,15 @@ export default {
         this.getParamsData()
       })
     },
-    addDialogClosed() {
+    addDialogClosed () {
       this.$refs.addFormRef.resetFields()
     },
     // 点击修改按钮 展示对话框
-    async showEditDialog(attr_id) {
+    async showEditDialog (id) {
       const {
         data: res
       } = await this.$http.get(
-        `categories/${this.cateId}/attributes/${attr_id}`,
+        `categories/${this.cateId}/attributes/${id}`,
         { params: { attr_sel: this.activeName } }
       )
       if (res.meta.status !== 200) {
@@ -350,11 +350,11 @@ export default {
       this.editDialogFormVisible = true
     },
     // 关闭重置对话框
-    editDialogClosed() {
+    editDialogClosed () {
       this.$refs.editFormRef.resetFields()
     },
     // 修改确定按钮
-    async editParams() {
+    async editParams () {
       this.$refs.editFormRef.validate(async valid => {
         if (!valid) return
         const {
@@ -372,7 +372,7 @@ export default {
       })
     },
     // 删除参数按钮
-    async removeParams(id) {
+    async removeParams (id) {
       const confirmResult = await this.$confirm(
         '此操作将永久删除该参数, 是否继续?',
         '提示',
@@ -395,8 +395,8 @@ export default {
       this.getParamsData()
     },
     // 文本失去焦点，或按下enter都会触发
-    handleInputConfirm(row) {
-      console.log(row);
+    handleInputConfirm (row) {
+      console.log(row)
       if (row.inputValue.trim().length === 0) {
         row.inputValue = ''
         row.inputVisible = false
@@ -409,7 +409,7 @@ export default {
       this.saveAttrvals(row)
     },
     // 点击按钮 ，展示文本输入文本框
-    showInput(row) {
+    showInput (row) {
       row.inputVisible = true
       // 让文本框自动获得焦点
       // $nextTick函数，当页面被重新渲染之后，才会指定函数中的代码
@@ -418,14 +418,14 @@ export default {
       })
     },
     // 删除标签
-    handleClose(index, row) {
+    handleClose (index, row) {
       // 先修改原数组
       row.attr_vals.splice(index, 1)
       this.saveAttrvals(row)
     },
     // 将对attr_vals的操作保存到数据库
     // 需要发起请求，保存，，attr_vals是数组，因为对面接收的是字符串，使用需要join连接起来
-    async saveAttrvals(row) {
+    async saveAttrvals (row) {
       const { data: res } = await this.$http.put(
         `categories/${this.cateId}/attributes/${row.attr_id}`,
         {
@@ -442,7 +442,7 @@ export default {
   },
   computed: {
     // 如果按钮需要被禁用，则返回true ，否则返回false
-    isBtnDisable() {
+    isBtnDisable () {
       if (this.selectedCateKeys.length !== 3) {
         return true
       } else {
@@ -450,14 +450,14 @@ export default {
       }
     },
     // 当前选中的三级分类的id
-    cateId() {
+    cateId () {
       if (this.selectedCateKeys.length === 3) {
         return this.selectedCateKeys[2]
       }
       return null
     },
     // 动态属性计算标题文本
-    titleText() {
+    titleText () {
       if (this.activeName === 'many') {
         return '动态参数'
       }

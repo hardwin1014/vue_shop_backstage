@@ -40,7 +40,7 @@
               type="primary"
               size="mini"
               icon="el-icon-edit"
-              @click="showBox"
+              @click="showBox(scope.row)"
             ></el-button>
             <el-button
               type="success"
@@ -99,7 +99,7 @@
       :visible.sync="progressVisible"
       width="50%"
     >
-      
+
     </el-dialog>
   </div>
 </template>
@@ -108,7 +108,7 @@
 import cityData from './citydata'
 export default {
   // 定义属性
-  data() {
+  data () {
     return {
       queryInfo: {
         query: '',
@@ -144,12 +144,12 @@ export default {
       searchText: ''
     }
   },
-  created() {
+  created () {
     this.getOrderList()
   },
   methods: {
     // 初始化数据
-    async getOrderList() {
+    async getOrderList () {
       const { data: res } = await this.$http.get('orders', {
         params: this.queryInfo
       })
@@ -157,33 +157,34 @@ export default {
       this.total = res.data.total
       this.orderList = res.data.goods
     },
-    handleSizeChange(newSize) {
+    handleSizeChange (newSize) {
       this.queryInfo.pagesize = newSize
       this.getOrderList()
     },
-    handleCurrentChange(num) {
+    handleCurrentChange (num) {
       this.queryInfo.pagenum = num
       this.getOrderList()
     },
     // 弹出对话框
-    showBox() {
+    showBox (row) {
+      console.log(row)
       this.addRessDialogFormVisible = true
     },
     // 编辑
-    editSure() {
+    editSure () {
       this.addRessDialogFormVisible = false
     },
     // 关闭重置
-    addressDialogClose() {
+    addressDialogClose () {
       this.$refs.addressRefs.resetFields()
     },
-    async showProgressBox() {
+    async showProgressBox () {
       // const {data:res} = await this.$http.get('/kuaidi/1106975712662')
       // this.progressVisible = true
       this.$message.info('非常抱歉，物流展示状态无法查询！')
-    },
+    }
     // progressSure(){
-      
+
     // }
   }
 }

@@ -16,12 +16,12 @@
 import echarts from 'echarts'
 import _ from 'lodash'
 export default {
-  data() {
+  data () {
     return {
       // 数据和配置项  需要合并的数据
       option: {
         title: {
-          text: 'ECharts 入门示例'
+          text: '数据报表'
         },
         tooltip: {},
         legend: {
@@ -41,16 +41,16 @@ export default {
       }
     }
   },
-  async mounted() {
+  async mounted () {
     // 基于准备好的dom，初始化eacharts实例
     var chartDom = document.getElementById('main')
     var myChart = echarts.init(chartDom)
     const { data: res } = await this.$http.get('reports/type/1')
     console.log(res)
     if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
-    
+
     // 准备数据的配置项
-    const result = _.merge(res.data,this.option)
+    const result = _.merge(res.data, this.option)
     // 使用刚指定的配置项和数据显示图表。
     myChart.setOption(result)
   },

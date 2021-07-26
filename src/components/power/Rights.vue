@@ -7,7 +7,7 @@
       <el-breadcrumb-item>权限列表</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 卡片区域 -->
-    <el-card class="box-card"> 
+    <el-card class="box-card">
       <el-table :data="rightsList" border stripe>
         <el-table-column type="index"></el-table-column>
         <el-table-column label="权限名称" prop="authName"></el-table-column>
@@ -27,19 +27,19 @@
 <script>
 export default {
   // 定义属性
-  data() {
+  data () {
     return {
-      rightsList:[] //权限列表
+      rightsList: [] // 权限列表
     }
   },
-  created(){
+  created () {
     // 获取所有的权限
     this.getRightsList()
   },
-  methods:{
-    async getRightsList(){
-      const { data:res } = await this.$http.get('rights/list')
-      if(res.meta.status !== 200){
+  methods: {
+    async getRightsList () {
+      const { data: res } = await this.$http.get('rights/list')
+      if (res.meta.status !== 200) {
         return this.$message.error('获取权限列表失败！')
       }
       this.rightsList = res.data

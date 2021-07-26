@@ -4,9 +4,9 @@
     <el-header>
       <div>
         <div class="userPic">
-          <img src="~@/assets/326.jpg" alt="" />
+          <img src="https://z3.ax1x.com/2021/07/26/WfE9a9.png" alt="" />
         </div>
-        <span>杰哥后台管理系统</span>
+        <span>电商后台管理系统</span>
       </div>
       <el-button type="info" @click="logout">退出</el-button>
     </el-header>
@@ -63,36 +63,42 @@
 <script>
 export default {
   // 定义属性
-  data() {
+  data () {
     return {
       // 左侧菜单数据
       menuList: [],
       // 二级菜单图标
       iconObj: {
-        '125': 'iconfont icon-user',
-        '103': 'iconfont icon-tijikongjian',
-        '101': 'iconfont icon-shangpin',
-        '102': 'iconfont icon-danju',
-        '145': 'iconfont icon-baobiao'
+        125: 'iconfont icon-user',
+        103: 'iconfont icon-tijikongjian',
+        101: 'iconfont icon-shangpin',
+        102: 'iconfont icon-danju',
+        145: 'iconfont icon-baobiao'
       },
       // 是否折叠
       isCollapse: false,
-      //被激活的连接地址
+      // 被激活的连接地址
       activePath: ''
     }
   },
-  created() {
+  created () {
     this.getMenuList()
     this.activePath = window.sessionStorage.getItem('activePath')
   },
   methods: {
     // 退出
-    logout() {
-      window.sessionStorage.clear()
-      this.$router.push('/login')
+    logout () {
+      this.$confirm('您确定退出吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          window.sessionStorage.clear()
+          this.$router.push('/login')
+        }).catch(() => {})
     },
-    //左侧列表渲染
-    async getMenuList() {
+    // 左侧列表渲染
+    async getMenuList () {
       const { data: res } = await this.$http.get('menus')
       // console.log(res);
       // 如果失败的情况下
@@ -101,11 +107,11 @@ export default {
       // console.log(this.menuList);
     },
     // 点击按钮，实现
-    toggleCollapse() {
+    toggleCollapse () {
       this.isCollapse = !this.isCollapse
     },
     // 保存链接的激活状态
-    saveNavState(activePath) {
+    saveNavState (activePath) {
       window.sessionStorage.setItem('activePath', activePath)
       this.activePath = activePath
     }

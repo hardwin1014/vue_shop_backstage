@@ -183,8 +183,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="setRoleDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="saveRoleInfo">确 定</el-button
-        >
+        <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -196,9 +195,9 @@ export default {
   data() {
     // 验证邮箱的校验规则
     var checkEmail = (rule, value, cb) => {
-      const regEmail = /^([A-Za-z0-9_\-\.])+\@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
+      const regEmail = /^([A-Za-z0-9_\-.])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
       if (regEmail.test(value)) {
-        //合法的邮箱
+        // 合法的邮箱
         return cb()
       } else {
         cb(new Error('请输入合法的邮箱'))
@@ -227,7 +226,7 @@ export default {
       userlist: [], // 用户列表
       total: 0, // 页面总数据
       addDialogVisible: false, // 控制添加用户的对话框
-      editDialogVisible: false, //控制修改用户的对话框
+      editDialogVisible: false, // 控制修改用户的对话框
       // 添加用户的表单数据
       addForm: {
         username: '',
@@ -286,7 +285,7 @@ export default {
           }
         ]
       },
-      editForm: {}, //修改查询到的用户信息对象
+      editForm: {}, // 修改查询到的用户信息对象
       // 修改表单的验证对象
       editFormRules: {
         email: [
@@ -366,7 +365,7 @@ export default {
     },
     // 点击按钮添加新用户
     addUser() {
-      //预验证
+      // 预验证
       this.$refs.addFormRef.validate(async valid => {
         // console.log(valid);
         if (!valid) return
@@ -378,11 +377,11 @@ export default {
         this.$message.success('添加用户成功！')
         // 隐藏添加的对话框
         this.addDialogVisible = false
-        //重新获取用户列表
+        // 重新获取用户列表
         this.getUserList()
       })
     },
-    //修改用户
+    // 修改用户
     async showEditDialog(id) {
       const { data: res } = await this.$http.get(`users/${id}`)
       if (res.meta.status !== 200) {
@@ -440,25 +439,28 @@ export default {
     async setRole(userInfo) {
       this.userInfo = userInfo
       // 在展示对话框前，获取所有角色列表
-      const { data: res } = await this.$http.get(`roles`)
+      const { data: res } = await this.$http.get('roles')
       if (res.meta.status !== 200) {
         return this.$message.error('获取角色列表失败')
       }
-      this.rolesList = res.data 
+      this.rolesList = res.data
       this.setRoleDialogVisible = true
     },
-    async saveRoleInfo(){
-      if(!this.selectedRoleId){
+    async saveRoleInfo() {
+      if (!this.selectedRoleId) {
         return this.$message.error('请选择要分配的角色！')
       }
-      const {data:res} = await this.$http.put(`users/${this.userInfo.id}/role`,{
-        rid: this.selectedRoleId
-      })
-      if(res.meta.status !== 200){
+      const { data: res } = await this.$http.put(
+        `users/${this.userInfo.id}/role`,
+        {
+          rid: this.selectedRoleId
+        }
+      )
+      if (res.meta.status !== 200) {
         return this.$message.error('更新角色列表失败')
       }
       this.$message.success('更新角色列表成功')
-      //刷新列表
+      // 刷新列表
       this.getUserList()
       // 关闭对话框
       this.setRoleDialogVisible = false
@@ -466,7 +468,7 @@ export default {
     },
     // 监听分配角色对话框的关闭事件
     // 关闭之后，清除里面的内容
-    setRoleDialogClosed(){
+    setRoleDialogClosed() {
       this.selectedRoleId = ''
       this.userInfo = {}
     }

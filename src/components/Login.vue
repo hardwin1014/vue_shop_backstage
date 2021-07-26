@@ -4,7 +4,7 @@
     <div class="login_box">
       <!-- 头像 -->
       <div class="avatar_box">
-        <img src="../assets/326.jpg" alt="" />
+        <img src="https://z3.ax1x.com/2021/07/26/WfE9a9.png" alt=""/>
       </div>
       <!-- 登录表单 -->
       <el-form
@@ -42,7 +42,7 @@
 <script>
 export default {
   // 定义属性
-  data() {
+  data () {
     return {
       // 表单数据
       loginForm: {
@@ -64,17 +64,17 @@ export default {
   },
   methods: {
     // 点击重置按钮，重置登录表单
-    resetLoginForm() {
+    resetLoginForm () {
       // console.log(this); 可以访问到form表单实例 $refs
       this.$refs.LoginFormRef.resetFields()
     },
     // 登录
-    login() {
+    login () {
       // 先获取表达的引用对象，调用validate()
       this.$refs.LoginFormRef.validate(async valid => {
-        //该回调函数会在校验结束后被调用，并传入两个参数：是否校验成功和未通过校验的字段。若不传入回调函数，则会返回一个 promise
+        // 该回调函数会在校验结束后被调用，并传入两个参数：是否校验成功和未通过校验的字段。若不传入回调函数，则会返回一个 promise
         // console.log(valid);
-        //判断valid的值是否为true
+        // 判断valid的值是否为true
         if (!valid) return
         // 将获取的表单数据传递给登录接口
         try {
@@ -101,7 +101,9 @@ export default {
 
 <style scoped lang="less">
 .login_container {
-  background-color: #2b5b6b;
+  // background-color: #2b5b6b;
+  background: url('https://z3.ax1x.com/2021/07/26/WfklTA.jpg') no-repeat;
+  background-size: 100%;
   height: 100%;
   .login_box {
     width: 450px;
